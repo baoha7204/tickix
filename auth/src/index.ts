@@ -24,12 +24,14 @@ app.use(signoutRouter);
 app.use(signupRouter);
 
 app.all("*", async () => {
-  throw new NotFoundError();
+  throw new NotFoundError("Route not found");
 });
 
 app.use(errorHandler);
 
 const bootstrap = async () => {
+  if (!process.env.JWT_KEY) throw new Error("JWT_KEY must be defined");
+
   try {
     await mongoose.connect("mongodb://auth-mongo-srv:27017/auth");
   } catch (err) {
