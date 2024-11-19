@@ -13,7 +13,7 @@ import { Jwt } from "../utils/jwt";
 const router = express.Router();
 
 router.post(
-  "/api/users/sign-in",
+  "/sign-in",
   signinValidation,
   requestValidation,
   async (req: Request, res: Response) => {

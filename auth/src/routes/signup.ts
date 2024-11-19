@@ -12,7 +12,7 @@ import { BadRequestError } from "../errors/bad-request-error";
 const router = express.Router();
 
 router.post(
-  "/api/users/sign-up",
+  "/sign-up",
   signupValidation,
   requestValidation,
   async (req: Request, res: Response) => {
