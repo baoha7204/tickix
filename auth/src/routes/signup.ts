@@ -4,10 +4,11 @@ import { signupValidation } from "./validation";
 
 import { User } from "../models/user";
 
-import { requestValidation } from "../middlewares/request-validation";
-
-import { DatabaseConnectionError } from "../errors/database-connection-error";
-import { BadRequestError } from "../errors/bad-request-error";
+import {
+  DatabaseConnectionError,
+  BadRequestError,
+  requestValidation,
+} from "@bhtickix/common";
 
 const router = express.Router();
 
