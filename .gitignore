@@ -44,3 +44,7 @@ lerna-debug.log*
 *.sln
 *.sw?
 .env
+
+# next.js
+.next
+/out/
