@@ -6,7 +6,7 @@ import {
 } from "@bhtickix/common";
 import express, { Request, Response } from "express";
 
-import { createTicketValidation } from "./validation/create-ticket";
+import { createTicketValidation } from "./validation";
 import { Ticket } from "../models/ticket";
 
 const router = express.Router();
