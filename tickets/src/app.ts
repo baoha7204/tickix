@@ -6,6 +6,7 @@ import { errorHandler, NotFoundError } from "@bhtickix/common";
 
 import { retrieveTicketRouter } from "./routes/retrieve-ticket";
 import { updateTicketRouter } from "./routes/update-ticket";
+import { createTicketRouter } from "./routes/create-ticket";
 
 const prefix = "/api/tickets";
 const app = express();
@@ -17,7 +18,7 @@ app.use(
 );
 
 app.use(prefix, retrieveTicketRouter);
-app.use(prefix, updateTicketRouter);
+app.use(prefix, createTicketRouter);
 app.use(prefix, updateTicketRouter);
 
 app.all("*", async () => {
