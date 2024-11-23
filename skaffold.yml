@@ -15,6 +15,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: baoha7204/tickix-tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: baoha7204/tickix-client
       context: client
       docker:

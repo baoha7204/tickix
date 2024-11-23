@@ -13,7 +13,7 @@ async function bootstrap() {
   }
 
   app.listen(3000, () => {
-    console.log("Auth Service - listening on port 3000");
+    console.log("Tickets Service - listening on port 3000");
   });
 }
 
