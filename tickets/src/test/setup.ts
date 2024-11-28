@@ -5,6 +5,8 @@ import { Jwt } from "@bhtickix/common";
 let con: Connection;
 let mongoServer: MongoMemoryServer;
 
+jest.mock("../nats-wrapper");
+
 declare global {
   var signin: () => string[];
 }
@@ -39,6 +41,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await con.db?.collections();
 
   if (collections) {

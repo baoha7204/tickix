@@ -8,6 +8,8 @@ import express, { Request, Response } from "express";
 
 import { createTicketValidation } from "./validation";
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -31,6 +33,13 @@ router.post(
     } catch (err) {
       throw new DatabaseConnectionError();
     }
+
+    await new TicketCreatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.status(201).send(ticket);
   }

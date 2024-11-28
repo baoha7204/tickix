@@ -2,6 +2,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 
 import app from "../../app";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("Update ticket route", () => {
   const updateTicketRoute = "/api/tickets";
@@ -74,5 +75,22 @@ describe("Update ticket route", () => {
 
     expect(ticketResponse.body.title).toEqual(newTitle);
     expect(ticketResponse.body.price).toEqual(newPrice);
+  });
+
+  it("Successful - Publishes an event", async () => {
+    const cookie = global.signin();
+    const res = await request(app)
+      .post(updateTicketRoute)
+      .set("Cookie", cookie)
+      .send({ title, price })
+      .expect(201);
+
+    await request(app)
+      .put(`${updateTicketRoute}/${res.body.id}`)
+      .set("Cookie", cookie)
+      .send({ title: newTitle, price: newPrice })
+      .expect(200);
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
