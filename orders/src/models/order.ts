@@ -12,7 +12,7 @@ interface OrderAttrs {
 }
 
 // An interface that describes the properties that a Orders Document has
-interface OrderDoc extends mongoose.Document {
+export interface OrderDoc extends mongoose.Document {
   userId: string;
   status: OrderStatus;
   expiresAt: Date;
@@ -27,7 +27,7 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
 const orderSchema = new mongoose.Schema(
   {
     userId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     expiresAt: {
@@ -40,7 +40,7 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(OrderStatus),
       default: OrderStatus.Created,
     },
-    ticketId: {
+    ticket: {
       type: Schema.Types.ObjectId,
       ref: "Ticket",
       required: true,

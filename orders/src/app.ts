@@ -2,7 +2,12 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-import { currentUser, errorHandler, NotFoundError } from "@bhtickix/common";
+import {
+  currentUser,
+  errorHandler,
+  NotFoundError,
+  requireAuth,
+} from "@bhtickix/common";
 
 import { retrieveOrderRouter } from "./routes/retrieve-order";
 import { cancelOrderRouter } from "./routes/cancel-order";
@@ -18,6 +23,7 @@ app.use(
 );
 
 app.use(currentUser);
+app.use(requireAuth);
 app.use(prefix, retrieveOrderRouter);
 app.use(prefix, cancelOrderRouter);
 app.use(prefix, createOrderRouter);
