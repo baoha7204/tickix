@@ -1,44 +1,48 @@
 import mongoose, { Schema } from "mongoose";
+import { OrderStatus } from "@bhtickix/common";
 
-type StatusOrder = "expired" | "paid" | "pending" | "cancelled";
+import { TicketDoc } from "./ticket";
 
 // An interface that describes the properties that are required to create a new Orders
-interface OrdersAttrs {
+interface OrderAttrs {
   userId: string;
-  status: StatusOrder;
+  status: OrderStatus;
   expiresAt: Date;
-  ticketId: string;
+  ticket: TicketDoc;
 }
 
 // An interface that describes the properties that a Orders Document has
-interface OrdersDoc extends mongoose.Document {
+interface OrderDoc extends mongoose.Document {
   userId: string;
-  status: StatusOrder;
+  status: OrderStatus;
   expiresAt: Date;
-  ticketId: string;
+  ticket: TicketDoc;
 }
 
 // An interface that describes the properties that a Orders Model has
-interface OrdersModel extends mongoose.Model<OrdersDoc> {
-  build(attrs: OrdersAttrs): OrdersDoc;
+interface OrderModel extends mongoose.Model<OrderDoc> {
+  build(attrs: OrderAttrs): OrderDoc;
 }
 
-const ordersSchema = new mongoose.Schema(
+const orderSchema = new mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
     },
     expiresAt: {
-      type: Date,
+      type: Schema.Types.Date,
       required: true,
     },
     status: {
       type: String,
       required: true,
+      enum: Object.values(OrderStatus),
+      default: OrderStatus.Created,
     },
     ticketId: {
       type: Schema.Types.ObjectId,
+      ref: "Ticket",
       required: true,
     },
   },
@@ -52,8 +56,8 @@ const ordersSchema = new mongoose.Schema(
   }
 );
 
-ordersSchema.statics.build = (attrs: OrdersAttrs) => new Orders(attrs);
+orderSchema.statics.build = (attrs: OrderAttrs) => new Order(attrs);
 
-const Orders = mongoose.model<OrdersDoc, OrdersModel>("Orders", ordersSchema);
+const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
 
-export { Orders };
+export { Order };
