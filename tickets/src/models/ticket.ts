@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Password } from "@bhtickix/common";
 
 // An interface that describes the properties that are required to create a new Ticket
 interface TicketAttrs {
