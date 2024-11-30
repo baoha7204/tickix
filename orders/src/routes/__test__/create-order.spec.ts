@@ -2,6 +2,7 @@ import request from "supertest";
 
 import app from "../../app";
 import mongoose from "mongoose";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("Create Order Route", () => {
   const ordersRoute = "/api/orders";
@@ -41,5 +42,6 @@ describe("Create Order Route", () => {
       .expect(201);
 
     expect(res.body.userId).toBeDefined();
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });

@@ -5,11 +5,13 @@ import {
   OrderStatus,
   UnauthorizedError,
 } from "@bhtickix/common";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
 router.delete("/:id", async (req: Request, res: Response) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate("ticket");
 
   if (!order) throw new NotFoundError("Order not found");
 
@@ -17,6 +19,13 @@ router.delete("/:id", async (req: Request, res: Response) => {
     throw new UnauthorizedError("Unauthorized access to this order");
 
   order.status = OrderStatus.Cancelled;
+
+  await new OrderCancelledPublisher(natsWrapper.client).publish({
+    id: order.id,
+    ticket: {
+      id: order.ticket.id,
+    },
+  });
 
   await order.save();
 

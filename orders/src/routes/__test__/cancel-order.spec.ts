@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../../app";
 import mongoose from "mongoose";
 import { OrderStatus } from "@bhtickix/common";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("Cancel Order Route", () => {
   const ordersRoute = "/api/orders";
@@ -55,5 +56,6 @@ describe("Cancel Order Route", () => {
       .expect(200);
 
     expect(cancelledOrder.status).toEqual(OrderStatus.Cancelled);
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
