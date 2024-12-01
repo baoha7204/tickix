@@ -5,20 +5,20 @@ import { Ticket } from "../../models/ticket";
 import { natsWrapper } from "../../nats-wrapper";
 
 describe("Create ticket route", () => {
-  const createTicketRoute = "/api/tickets";
+  const ticketRoute = "/api/tickets";
   it("has a route handler for post requests", async () => {
-    const res = await request(app).post(createTicketRoute).send({});
+    const res = await request(app).post(ticketRoute).send({});
     expect(res.status).not.toEqual(404);
   });
 
   it("Failed - Response 401 if the user not signed in", async () => {
-    await request(app).post(createTicketRoute).send({}).expect(401);
+    await request(app).post(ticketRoute).send({}).expect(401);
   });
 
   it("Successful - Response not 401 if the user signed in", async () => {
     const cookie = global.signin();
     const res = await request(app)
-      .post(createTicketRoute)
+      .post(ticketRoute)
       .set("Cookie", cookie)
       .send({});
     expect(res.status).not.toEqual(401);
@@ -34,7 +34,7 @@ describe("Create ticket route", () => {
     async (body) => {
       const cookie = global.signin();
       await request(app)
-        .post(createTicketRoute)
+        .post(ticketRoute)
         .set("Cookie", cookie)
         .send(body)
         .expect(422);
@@ -49,7 +49,7 @@ describe("Create ticket route", () => {
 
     const cookie = global.signin();
     await request(app)
-      .post(createTicketRoute)
+      .post(ticketRoute)
       .set("Cookie", cookie)
       .send({ title, price })
       .expect(201);
@@ -65,7 +65,7 @@ describe("Create ticket route", () => {
       price = 10.5;
     const cookie = global.signin();
     await request(app)
-      .post(createTicketRoute)
+      .post(ticketRoute)
       .set("Cookie", cookie)
       .send({ title, price })
       .expect(201);

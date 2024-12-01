@@ -31,6 +31,9 @@ router.put(
         "User not authorized for updating this ticket"
       );
 
+    if (ticket.orderId)
+      throw new UnauthorizedError("User cannot edit a reserved ticket");
+
     ticket.set({ title, price });
     try {
       await ticket.save();
