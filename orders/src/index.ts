@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
+import { TicketUpdatedListener } from "./events/listeners/ticket-update-listener";
 
 async function bootstrap() {
   if (!process.env.JWT_KEY) throw new Error("JWT_KEY must be defined");
@@ -18,12 +20,17 @@ async function bootstrap() {
       process.env.NATS_CLIENT_ID,
       process.env.NATS_URL
     );
-    natsWrapper.client.on("close", () => {
+
+    const client = natsWrapper.client;
+    client.on("close", () => {
       console.log("NATS connection closed");
       process.exit();
     });
-    process.on("SIGINT", () => natsWrapper.client.close());
-    process.on("SIGTERM", () => natsWrapper.client.close());
+    process.on("SIGINT", () => client.close());
+    process.on("SIGTERM", () => client.close());
+
+    new TicketCreatedListener(client).listen();
+    new TicketUpdatedListener(client).listen();
   } catch (err) {
     console.error(err);
   }
