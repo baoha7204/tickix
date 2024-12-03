@@ -1,3 +1,4 @@
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { natsWrapper } from "./nats-wrapper";
 
 async function bootstrap() {
@@ -21,6 +22,8 @@ async function bootstrap() {
     });
     process.on("SIGINT", () => client.close());
     process.on("SIGTERM", () => client.close());
+
+    new OrderCreatedListener(client).listen();
   } catch (err) {
     console.error(err);
   }
