@@ -39,6 +39,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: baoha7204/tickix-payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: baoha7204/tickix-client
       context: client
       docker:

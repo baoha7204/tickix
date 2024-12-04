@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 async function bootstrap() {
   if (!process.env.JWT_KEY) throw new Error("JWT_KEY must be defined");
@@ -26,12 +28,15 @@ async function bootstrap() {
     });
     process.on("SIGINT", () => client.close());
     process.on("SIGTERM", () => client.close());
+
+    new OrderCreatedListener(client).listen();
+    new OrderCancelledListener(client).listen();
   } catch (err) {
     console.error(err);
   }
 
   app.listen(3000, () => {
-    console.log("Payments Service - listening on port 3000");
+    console.log("Tickets Service - listening on port 3000");
   });
 }
 
