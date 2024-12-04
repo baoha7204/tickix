@@ -9,6 +9,7 @@ import { Request, Response, Router } from "express";
 import { body } from "express-validator";
 import mongoose from "mongoose";
 import { Order } from "../model/order";
+import { stripe } from "../stripe";
 
 const router = Router();
 
@@ -38,6 +39,12 @@ router.post(
 
     if (order.status === OrderStatus.Cancelled)
       throw new BadRequestError("Order has been cancelled");
+
+    await stripe.charges.create({
+      amount: order.price * 100,
+      currency: "usd",
+      source: token,
+    });
 
     res.status(201).send({ success: true });
   }

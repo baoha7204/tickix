@@ -4,6 +4,7 @@ import {
   BadRequestError,
   NotFoundError,
   OrderStatus,
+  requestValidation,
   UnauthorizedError,
 } from "@bhtickix/common";
 import { param } from "express-validator";
@@ -23,6 +24,7 @@ router.delete(
       .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
       .withMessage("Order ID is required"),
   ],
+  requestValidation,
   async (req: Request, res: Response) => {
     const order = await Order.findById(req.params.id).populate("ticket");
 

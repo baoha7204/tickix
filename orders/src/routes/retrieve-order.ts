@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
 
 import { Order } from "../models/order";
-import { NotFoundError, UnauthorizedError } from "@bhtickix/common";
+import {
+  NotFoundError,
+  requestValidation,
+  UnauthorizedError,
+} from "@bhtickix/common";
 import { param } from "express-validator";
 import mongoose from "mongoose";
 
@@ -25,6 +29,7 @@ router.get(
       .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
       .withMessage("Order ID is required"),
   ],
+  requestValidation,
   async (req: Request, res: Response) => {
     const order = await Order.findById(req.params.id).populate("ticket");
 

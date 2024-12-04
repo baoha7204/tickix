@@ -3,6 +3,7 @@ import app from "../../app";
 import mongoose from "mongoose";
 import { Order } from "../../model/order";
 import { OrderStatus } from "@bhtickix/common";
+import { stripe } from "../../stripe";
 
 describe("Create Charge Route", () => {
   const paymentsRoute = "/api/payments";
@@ -60,11 +61,11 @@ describe("Create Charge Route", () => {
       .expect(401);
   });
 
-  it("Sucess - return 201 with valid inputs", async () => {
+  it("Failed - return 400 when purchasing a cancelled order", async () => {
     const userId = new mongoose.Types.ObjectId().toHexString();
     const order = Order.build({
       userId,
-      status: OrderStatus.Created,
+      status: OrderStatus.Cancelled,
       price: 20,
       version: 0,
     });
@@ -78,6 +79,35 @@ describe("Create Charge Route", () => {
         token: "123",
         orderId: order.id,
       })
+      .expect(400);
+  });
+
+  it("Sucess - return 201 with valid inputs", async () => {
+    const userId = new mongoose.Types.ObjectId().toHexString();
+    const price = Math.floor(Math.random() * 100000);
+    const order = Order.build({
+      userId,
+      status: OrderStatus.Created,
+      price,
+      version: 0,
+    });
+
+    await order.save();
+
+    await request(app)
+      .post(paymentsRoute)
+      .set("Cookie", global.signin(userId))
+      .send({
+        token: "tok_visa",
+        orderId: order.id,
+      })
       .expect(201);
+
+    const charges = await stripe.charges.list({ limit: 50 });
+    const charge = charges.data.find(
+      (charge) => charge.amount === price * 100 && charge.currency === "usd"
+    );
+
+    expect(charge).toBeDefined();
   });
 });

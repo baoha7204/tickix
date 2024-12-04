@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
+import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 
 async function bootstrap() {
   if (!process.env.JWT_KEY) throw new Error("JWT_KEY must be defined");
@@ -26,6 +29,10 @@ async function bootstrap() {
     });
     process.on("SIGINT", () => client.close());
     process.on("SIGTERM", () => client.close());
+
+    new TicketCreatedListener(client).listen();
+    new TicketUpdatedListener(client).listen();
+    new ExpirationCompleteListener(client).listen();
   } catch (err) {
     console.error(err);
   }
