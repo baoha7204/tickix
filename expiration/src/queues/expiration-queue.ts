@@ -14,7 +14,7 @@ export const expirationQueue = new Queue<Payload>(QUEUE_BULL_NAME, {
 });
 
 expirationQueue.process(async (job) => {
-  new ExpirationCompletePublisher(natsWrapper.client).publish({
+  await new ExpirationCompletePublisher(natsWrapper.client).publish({
     orderId: job.data.orderId,
   });
-}); 
+});

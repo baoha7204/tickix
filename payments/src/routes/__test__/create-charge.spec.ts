@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import { Order } from "../../model/order";
 import { OrderStatus } from "@bhtickix/common";
 import { stripe } from "../../stripe";
+import { Charge } from "../../model/charge";
+import { natsWrapper } from "../../nats-wrapper";
 
 describe("Create Charge Route", () => {
   const paymentsRoute = "/api/payments";
@@ -109,5 +111,12 @@ describe("Create Charge Route", () => {
     );
 
     expect(charge).toBeDefined();
+
+    const savedCharge = await Charge.findOne({
+      stripeId: charge?.id,
+    });
+
+    expect(savedCharge).not.toBeNull();
+    expect(natsWrapper.client.publish).toHaveBeenCalled();
   });
 });
