@@ -8,14 +8,13 @@ let mongoServer: MongoMemoryServer;
 jest.mock("../nats-wrapper");
 
 declare global {
-  var signin: () => string[];
+  var signin: (id?: string) => string[];
 }
 
-global.signin = () => {
+global.signin = (id?: string) => {
   // Build a JWT payload. { id, email }
-  const id = new mongoose.Types.ObjectId().toHexString();
   const payload = {
-    id,
+    id: id || new mongoose.Types.ObjectId().toHexString(),
     email: "baoha3604@gmail.com",
   };
 

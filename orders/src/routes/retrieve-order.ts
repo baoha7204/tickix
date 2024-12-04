@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 
 import { Order } from "../models/order";
 import { NotFoundError, UnauthorizedError } from "@bhtickix/common";
+import { param } from "express-validator";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -13,15 +15,26 @@ router.get("/", async (req: Request, res: Response) => {
   res.send(orders);
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
-  const order = await Order.findById(req.params.id).populate("ticket");
+router.get(
+  "/:id",
+  [
+    param("id")
+      .trim()
+      .not()
+      .isEmpty()
+      .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
+      .withMessage("Order ID is required"),
+  ],
+  async (req: Request, res: Response) => {
+    const order = await Order.findById(req.params.id).populate("ticket");
 
-  if (!order) throw new NotFoundError("Order not found");
+    if (!order) throw new NotFoundError("Order not found");
 
-  if (order.userId !== req.currentUser!.id)
-    throw new UnauthorizedError("Unauthorized access to this order");
+    if (order.userId !== req.currentUser!.id)
+      throw new UnauthorizedError("Unauthorized access to this order");
 
-  res.send(order);
-});
+    res.send(order);
+  }
+);
 
 export { router as retrieveOrderRouter };

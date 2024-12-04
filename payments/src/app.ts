@@ -8,8 +8,9 @@ import {
   currentUser,
   requireAuth,
 } from "@bhtickix/common";
+import { createChargeRouter } from "./routes/create-charge";
 
-const prefix = "/api/tickets";
+const prefix = "/api/payments";
 const app = express();
 app.set("trust proxy", true);
 
@@ -20,6 +21,8 @@ app.use(
 
 app.use(currentUser);
 app.use(requireAuth);
+
+app.use(prefix, createChargeRouter);
 
 app.all("*", async () => {
   throw new NotFoundError("Route not found");
