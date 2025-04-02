@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@bhtickix/common": "^1.0.12",
+    "@stripe/react-stripe-js": "^3.0.0",
+    "@stripe/stripe-js": "^5.2.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "next": "^13.5.7",

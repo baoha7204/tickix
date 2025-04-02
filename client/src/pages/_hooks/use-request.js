@@ -1,25 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
+import ErrorWrapper from "../../components/ErrorWrapper";
 
 const useRequest = ({ url, method = "get", body = {}, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
-  const doRequest = async () => {
+  const doRequest = async (props = {}) => {
     try {
-      const res = await axios[method](url, body);
+      const res = await axios[method](url, { ...body, ...props });
       setErrors(null);
       if (onSuccess) onSuccess(res.data);
       return res.data;
     } catch (err) {
-      setErrors(
-        <div className="alert alert-danger">
-          <ul className="my-0">
-            {err.response.data.errors.map((error) => (
-              <li key={error.message}>{error.message}</li>
-            ))}
-          </ul>
-        </div>
-      );
+      setErrors(<ErrorWrapper errors={err.response.data.errors} />);
     }
   };
 

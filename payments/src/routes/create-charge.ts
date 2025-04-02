@@ -19,7 +19,6 @@ const router = Router();
 router.post(
   "/",
   [
-    body("token").trim().not().isEmpty(),
     body("orderId")
       .trim()
       .not()
@@ -43,15 +42,17 @@ router.post(
     if (order.status === OrderStatus.Cancelled)
       throw new BadRequestError("Order has been cancelled");
 
-    const stripeRes = await stripe.charges.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       amount: order.price * 100,
       currency: "usd",
-      source: token,
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
     const charge = Charge.build({
       order: order,
-      stripeId: stripeRes.id,
+      stripeId: paymentIntent.id,
     });
     await charge.save();
 
@@ -61,7 +62,9 @@ router.post(
       stripeId: charge.stripeId,
     });
 
-    res.status(201).send({ success: true });
+    res
+      .status(201)
+      .send({ success: true, client_secret: paymentIntent.client_secret });
   }
 );
 

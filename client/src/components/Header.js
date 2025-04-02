@@ -4,6 +4,8 @@ const Header = ({ isAuth }) => {
   const links = [
     !isAuth && { label: "Sign In", href: "/auth/signin" },
     !isAuth && { label: "Sign Up", href: "/auth/signup" },
+    isAuth && { label: "My orders", href: "/orders" },
+    isAuth && { label: "Sell ticket", href: "/tickets/create" },
     isAuth && { label: "Sign Out", href: "/auth/signout" },
   ].filter(Boolean);
   return (
