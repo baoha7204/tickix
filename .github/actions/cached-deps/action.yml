@@ -12,18 +12,11 @@ outputs:
   cache-hit:
     description: "Whether the cache was hit"
     value: ${{ steps.cache-outputs.outputs.cache-hit }}
-  service-directory:
-    description: "The service directory"
-    value: ${{ steps.service-directory.outputs.service-directory }}
 runs:
   using: "composite"
   steps:
-    - name: Service directory
-      id: service-directory
-      run: echo "service-directory=${{ github.workspace }}/${{ inputs.service }}" >> $GITHUB_OUTPUT
-      shell: bash
     - name: Go to service directory
-      run: cd ${{ steps.service-directory.outputs.service-directory }}
+      run: cd ${{ inputs.service }}
       shell: bash
     - name: Cache dependencies
       if: inputs.caching == 'true'
