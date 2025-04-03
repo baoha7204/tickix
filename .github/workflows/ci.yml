@@ -14,6 +14,9 @@ jobs:
       - name: Load and cache dependencies
         id: cached-deps
         uses: ./.github/actions/cached-deps
+        with:
+          service: auth
+          caching: true
       - name: Output cache-hit information
         run: echo "${{ steps.cached-deps.outputs.cache-hit }}"
       - name: Test code
