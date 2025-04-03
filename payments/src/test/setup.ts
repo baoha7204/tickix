@@ -6,6 +6,7 @@ let con: Connection;
 let mongoServer: MongoMemoryServer;
 
 jest.mock("../nats-wrapper");
+jest.mock("../stripe");
 
 declare global {
   var signin: (id?: string) => string[];

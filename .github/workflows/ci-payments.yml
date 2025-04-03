@@ -2,30 +2,33 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - "payments/**"
 jobs:
-  test-auth:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Go to auth
-        run: cd auth
       - name: Load and cache dependencies
         id: cached-deps
         uses: ./.github/actions/cached-deps
+        with:
+          service: payments
+          caching: true
       - name: Output cache-hit information
         run: echo "${{ steps.cached-deps.outputs.cache-hit }}"
       - name: Test code
         id: run-tests
-        run: npm run test:cov
+        run: cd payments && npm run test:cov
       - name: Zip coverage
         uses: vimtor/action-zip@v1.2
         with:
-          files: coverage
-          dest: coverage.zip
+          files: payments/coverage
+          dest: coverage-payments.zip
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: coverage.zip
+          name: test-payments-report
+          path: coverage-payments.zip
