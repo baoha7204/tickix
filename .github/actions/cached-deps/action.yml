@@ -15,19 +15,16 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Go to service directory
-      run: cd ${{ inputs.service }}
-      shell: bash
     - name: Cache dependencies
       if: inputs.caching == 'true'
       id: cache
       uses: actions/cache@v3
       with:
-        path: node_modules
-        key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+        path: ${{ inputs.service }}/node_modules
+        key: deps-node-modules-${{ hashFiles('${{ inputs.service }}/package-lock.json') }}
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
-      run: npm install --omit=dev
+      run: cd ${{ inputs.service }} && npm install --omit=dev
       shell: bash
     - name: Set cache-hit output
       id: cache-outputs
