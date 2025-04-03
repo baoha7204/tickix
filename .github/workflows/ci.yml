@@ -2,9 +2,6 @@ on:
   pull_request:
     branches:
       - master
-defaults:
-  run:
-    working-directory: ./auth
 jobs:
   test-auth:
     runs-on: ubuntu-latest
@@ -21,15 +18,15 @@ jobs:
         run: echo "${{ steps.cached-deps.outputs.cache-hit }}"
       - name: Test code
         id: run-tests
-        run: npm run test:cov
+        run: cd auth && npm run test:cov
       - name: Zip coverage
         uses: vimtor/action-zip@v1.2
         with:
-          files: coverage
-          dest: coverage.zip
+          files: auth/coverage
+          dest: coverage-auth.zip
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: coverage.zip
+          name: test-auth-report
+          path: coverage-auth.zip
