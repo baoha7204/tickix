@@ -1,6 +1,9 @@
 name: Get & cache dependencies
 description: Get dependencies (via npm) and cache them for future runs
 inputs:
+  serivce:
+    description: "The service to get dependencies for"
+    required: true
   caching:
     description: "The caching strategy to use"
     required: false
@@ -9,9 +12,19 @@ outputs:
   cache-hit:
     description: "Whether the cache was hit"
     value: ${{ steps.cache-outputs.outputs.cache-hit }}
+  service-directory:
+    description: "The service directory"
+    value: ${{ steps.service-directory.outputs.service-directory }}
 runs:
   using: "composite"
   steps:
+    - name: Service directory
+      id: service-directory
+      run: echo "service-directory=${{ github.workspace }}/${{ inputs.service }}" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Go to service directory
+      run: cd ${{ steps.service-directory.outputs.service-directory }}
+      shell: bash
     - name: Cache dependencies
       if: inputs.caching == 'true'
       id: cache
