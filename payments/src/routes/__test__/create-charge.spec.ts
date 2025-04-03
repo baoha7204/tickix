@@ -3,7 +3,6 @@ import app from "../../app";
 import mongoose from "mongoose";
 import { Order } from "../../model/order";
 import { OrderStatus } from "@bhtickix/common";
-import { stripe } from "../../stripe";
 import { Charge } from "../../model/charge";
 import { natsWrapper } from "../../nats-wrapper";
 
