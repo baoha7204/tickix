@@ -24,5 +24,4 @@ jobs:
           CLUSTER_NAME: ${{ vars.DIGITALOCEAN_KUBERNETES_CLUSTER }}
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f infra/k8s &&
-          kubectl apply -f infra/k8s-prod
+          kubectl apply -f infra/k8s && kubectl apply -f infra/k8s-prod
