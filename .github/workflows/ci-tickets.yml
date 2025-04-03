@@ -3,7 +3,7 @@ on:
     branches:
       - master
 jobs:
-  test-auth:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -12,21 +12,21 @@ jobs:
         id: cached-deps
         uses: ./.github/actions/cached-deps
         with:
-          service: auth
+          service: tickets
           caching: true
       - name: Output cache-hit information
         run: echo "${{ steps.cached-deps.outputs.cache-hit }}"
       - name: Test code
         id: run-tests
-        run: cd auth && npm run test:cov
+        run: cd tickets && npm run test:cov
       - name: Zip coverage
         uses: vimtor/action-zip@v1.2
         with:
-          files: auth/coverage
-          dest: coverage-auth.zip
+          files: tickets/coverage
+          dest: coverage-tickets.zip
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
-          name: test-auth-report
-          path: coverage-auth.zip
+          name: test-tickets-report
+          path: coverage-tickets.zip
