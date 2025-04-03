@@ -1,9 +1,6 @@
 name: Get & cache dependencies
 description: Get dependencies (via npm) and cache them for future runs
 inputs:
-  serivce:
-    description: "The service to get dependencies for"
-    required: true
   caching:
     description: "The caching strategy to use"
     required: false
@@ -15,9 +12,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Go to service directory
-      run: cd ${{ inputs.service }}
-      shell: bash
     - name: Cache dependencies
       if: inputs.caching == 'true'
       id: cache
