@@ -5,8 +5,8 @@ const buildClient = ({ req }) => {
   // Check if the environment is SERVER
   if (typeof window === "undefined") {
     config = {
-      baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      // baseURL: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseUrl: "http://pregnacare.dev",
       headers: req.headers,
     };
   }
