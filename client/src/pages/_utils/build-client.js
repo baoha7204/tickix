@@ -6,7 +6,7 @@ const buildClient = ({ req }) => {
   if (typeof window === "undefined") {
     config = {
       // baseURL: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
-      baseUrl: "http://pregnacare.dev",
+      baseUrl: "http://www.pregnacare.dev",
       headers: req.headers,
     };
   }
